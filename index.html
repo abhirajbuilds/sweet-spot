@@ -23,13 +23,15 @@ h1{font:600 28px/1.2 Georgia,serif;margin:0 0 4px}
 .mh small{display:block;font-size:9px;opacity:.8}
 .mh.now{background:var(--ink);color:var(--bg)}
 .mh.sw{background:var(--sweet);color:#fff}
-.sec{margin:18px 0 4px;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}
-.row{margin-bottom:8px;cursor:pointer}
+.sec{margin:16px 0 6px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--c);cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.sec::before{content:"▾";font-size:11px}.sec.col::before{content:"▸"}
+#stick{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:4px 0 6px;border-bottom:1px solid var(--line);margin-top:8px}
+.row{margin-bottom:5px;cursor:pointer}
 .row .t{font-size:13px;display:flex;justify-content:space-between;gap:8px}
 .row .t span:last-child{color:var(--mute);font-size:12px;text-align:right}
 .row.pin .t span:first-child::before{content:"📌 "}
 .row .grid{margin:0}
-.c{height:14px;border-radius:4px;background:var(--line);opacity:.45;position:relative}
+.c{height:10px;border-radius:4px;background:var(--line);opacity:.45;position:relative}
 .c.v1{background:var(--c);opacity:.12}
 .c.v2{background:var(--c);opacity:.5}
 .c.v3{background:var(--c);opacity:1}
@@ -46,12 +48,13 @@ h1{font:600 28px/1.2 Georgia,serif;margin:0 0 4px}
   <div class="chips city" id="city"></div>
   <div class="chips" id="chips"></div>
   <div class="sweet" id="sweet"></div>
+  <div id="stick"></div>
   <div id="rows"></div>
   <p style="text-align:center;margin-top:24px"><a class="chip" id="fb" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">💬 Spotted a mistake? Tell us</a></p><p class="hint">The calendar always starts from the current month and shows the next 12. Data last checked 17 Oct 2026. Long weekends are calculated from holidays with confirmed dates only. Draft data from general knowledge and public holiday lists, not yet fully verified. State governments publish official lists around December, so dates marked ~ are approximate. Darker bars mean better or stronger conditions; faint bars mean poor ones. Check official sources before booking.</p>
 </div>
+<script src="config.js"></script>
 <script>
-const FEEDBACK_URL='https://forms.gle/REPLACE-WITH-YOUR-FORM-LINK';
-document.getElementById('fb').href=FEEDBACK_URL;
+document.getElementById('fb').href=typeof FEEDBACK_URL!=='undefined'?FEEDBACK_URL:'#';
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const T=new Date(),S=T.getMonth(),Y0=T.getFullYear();
 const WIN=Array.from({length:12},(_,j)=>({y:Y0+Math.floor((S+j)/12),m:(S+j)%12}));
@@ -83,9 +86,9 @@ const mkLong=f=>{const A={n:'Long weekends',s:[]},B={n:'Bridge: take 1 day off',
 f.forEach(it=>it.s.forEach(([y,m1,d1,m2,d2,p])=>{if(it.c||p||m1!==m2||d1!==d2)return;const w=new Date(y,m1-1,d1).getDay();
 const sp=(o1,o2,t)=>{const a=new Date(y,m1-1,d1+o1),z=new Date(y,m1-1,d1+o2);if(a.getFullYear()!==z.getFullYear())return;t.s.push([a.getFullYear(),a.getMonth()+1,a.getDate(),z.getMonth()+1,z.getDate(),0])};
 if(w===5)sp(0,2,A);else if(w===1)sp(-2,0,A);else if(w===4)sp(0,3,B);else if(w===2)sp(-3,0,B)}));
-A.e=B.e=1;A.note='3 days off from 1 holiday';B.note='1 leave day gives 4 days off';return[A,B]};
+A.e=B.e=A.next=B.next=1;A.note='3 days off';B.note='4 days for 1 leave day';return[A,B]};
 for(const k in CITIES)CITIES[k].data.long=mkLong(CITIES[k].data.fest);
-const st={city:'blr',on:new Set(['fest','long','trip']),pin:new Set()};
+const st={city:'blr',on:new Set(['fest','long','trip']),pin:new Set(),col:new Set()};
 let SW=null;
 function frag(it,j){const{y,m}=WIN[j],dim=new Date(y,m+1,0).getDate();let r=null;
  for(const sp of it.s){let a1,b1,a2,b2,p=0;
@@ -95,12 +98,12 @@ function frag(it,j){const{y,m}=WIN[j],dim=new Date(y,m+1,0).getDate();let r=null
   r=r?[Math.min(r[0],a),Math.max(r[1],b),r[2]]:[a,b,sp]}
  return r}
 const val=(it,j)=>it.c?it.c[WIN[j].m]:(frag(it,j)?2:0);
-const first=it=>{for(let j=0;j<12;j++){const f=frag(it,j);if(f)return f[2]}return null};
+const first=it=>{const t=new Date(T.getFullYear(),T.getMonth(),T.getDate());let best=null,bk=1e15;for(const sp of it.s){if(sp[0]<1900)continue;const e=new Date(sp[0],sp[3]-1,sp[4])-0;if(e>=t-0&&e<bk){bk=e;best=sp}}return best};
 const fd=(m,d)=>d+' '+MN[m-1];
-const lab=it=>{if(!it.e)return it.note||'';const s=first(it);if(!s||s.length<5||s[0]<1900)return it.note||'';const[,a,b,c,d,p]=s;return(p?'~':'')+(a===c&&b===d?fd(a,b):fd(a,b)+' – '+fd(c,d))+(it.note?' · '+it.note:'')};
+const lab=it=>{if(!it.e)return it.note||'';const s=first(it);if(!s)return it.note||'';const[,a,b,c,d,p]=s;const r=a===c?(b===d?fd(a,b):b+'–'+d+' '+MN[a-1]):fd(a,b)+' – '+fd(c,d);return(it.next?'Next ':'')+(p?'~':'')+r+(it.note?' · '+it.note:'')};
 const sk=it=>{const s=first(it);return s&&s[0]>1900?s[0]*500+s[1]*40+s[2]:0};
 const key=(l,it)=>st.city+l+it.n;
-const vis=it=>it.c||it.s.length===0||WIN.some((_,j)=>frag(it,j));
+const vis=it=>!it.e||it.s.length===0||!!first(it);
 function sweet(){const p=[];const dt=CITIES[st.city].data;for(const l in dt)dt[l].forEach(it=>{if(st.pin.has(key(l,it)))p.push(it)});return p.length?WIN.map((_,j)=>p.every(it=>val(it,j)>=2)):null}
 const head=()=>{const h=document.createElement('div');h.className='grid';h.innerHTML=WIN.map((w,j)=>'<div class="mh'+(j===0?' now':'')+(SW&&SW[j]?' sw':'')+'">'+MN[w.m]+'<small>'+(j===0||w.m===0?w.y:'&nbsp;')+'</small></div>').join('');return h};
 function render(){
@@ -111,10 +114,11 @@ function render(){
   const sw=SW=sweet(),s=document.getElementById('sweet');
   if(!sw)s.innerHTML='Tap any bar below to pin it. Example: pin a fruit and a getaway to find when both work.';
   else{const g=WIN.filter((_,j)=>sw[j]).map(w=>MN[w.m]+' ’'+String(w.y).slice(2));s.innerHTML=g.length?'Sweet spot: <b>'+g.join(', ')+'</b>: everything you pinned lines up.':'No month fits all your pins. Try unpinning one.'}
+  const sk_=document.getElementById('stick');sk_.innerHTML='';sk_.appendChild(head());
   const r=document.getElementById('rows');r.innerHTML='';
   const data=CITIES[st.city].data;
   for(const l in COL){if(!st.on.has(l))continue;
-    const sec=document.createElement('div');sec.className='sec';sec.style.setProperty('--c',COL[l]);sec.textContent=NM[l];r.appendChild(sec);r.appendChild(head());
+    const sec=document.createElement('div');sec.className='sec'+(st.col.has(l)?' col':'');sec.onclick=()=>{st.col.has(l)?st.col.delete(l):st.col.add(l);render()};sec.style.setProperty('--c',COL[l]);sec.textContent=NM[l];r.appendChild(sec);if(st.col.has(l))continue;
     let items=data[l].filter(vis);if(l==='fest')items=items.slice().sort((a,b)=>sk(a)-sk(b));
     items.forEach(it=>{
       const k=key(l,it),d=document.createElement('div');d.className='row'+(st.pin.has(k)?' pin':'');d.style.setProperty('--c',COL[l]);
@@ -125,7 +129,6 @@ function render(){
         if(f[1]-f[0]>.99)return '<div class="c v3'+sc+'"></div>';
         return '<div class="c dd'+sc+'"><i class="tk" style="left:'+f[0]*100+'%;width:'+(f[1]-f[0])*100+'%"></i></div>'}).join('')+'</div>';
       d.onclick=()=>{st.pin.has(k)?st.pin.delete(k):st.pin.add(k);render()};r.appendChild(d)});
-    r.appendChild(head());
   }
 }
 render();
