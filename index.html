@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>When to… seasonal calendar for Indian cities</title>
+<title>Sweet Spot · seasonal calendar for Indian cities</title>
 <style>
 :root{--bg:#faf7f2;--card:#fff;--ink:#1f1d1a;--mute:#7a746b;--line:#e8e2d8;--sweet:#2e9e6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171513;--card:#211e1b;--ink:#f1ece4;--mute:#a09889;--line:#34302b}}
@@ -40,15 +40,17 @@ h1{font:600 28px/1.2 Georgia,serif;margin:0 0 4px}
 </head>
 <body>
 <div class="wrap">
-  <h1>When to…</h1>
-  <p class="sub">A year at a glance. Pick your city, switch layers on, then tap items to pin them and see when they line up.</p>
+  <h1>Sweet Spot</h1>
+  <p class="sub">The best months for fruit, festivals, long weekends and getaways, on one year strip. Pin what you care about and the sweet spot lights up in green.</p>
   <div class="chips city" id="city"></div>
   <div class="chips" id="chips"></div>
   <div class="sweet" id="sweet"></div>
   <div id="rows"></div>
-  <p class="hint">Draft data from general knowledge and public holiday lists, not yet fully verified. Holidays are for 2027. State governments publish the official 2027 lists around December, so dates marked ~ are approximate. Darker bars mean better or stronger conditions; faint bars mean poor ones. Check official sources before booking.</p>
+  <p style="text-align:center;margin-top:24px"><a class="chip" id="fb" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">💬 Spotted a mistake? Tell us</a></p><p class="hint">Data last checked 17 Oct 2026. Long weekends are calculated from holidays with confirmed dates only. Draft data from general knowledge and public holiday lists, not yet fully verified. Holidays are for 2027. State governments publish the official 2027 lists around December, so dates marked ~ are approximate. Darker bars mean better or stronger conditions; faint bars mean poor ones. Check official sources before booking.</p>
 </div>
 <script>
+const FEEDBACK_URL='https://forms.gle/REPLACE-WITH-YOUR-FORM-LINK';
+document.getElementById('fb').href=FEEDBACK_URL;
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DIM=[31,28,31,30,31,30,31,31,30,31,30,31];
 const M=(n,a,b,note)=>({n,s:a<=b?[[a,1,b,31]]:[[a,1,12,31],[1,1,b,31]],note});
 const MM=(n,r,note)=>({n,s:r.flatMap(([a,b])=>M(n,a,b).s),note});
@@ -56,8 +58,8 @@ const D=(n,m,d,p)=>({n,s:[[m,d,m,d]],e:1,p});
 const R=(n,m1,d1,m2,d2,p)=>({n,s:[[m1,d1,m2,d2]],e:1,p});
 const C=(n,c,note)=>({n,c,note});
 const srt=a=>a.sort((x,y)=>x.s[0][0]*40+x.s[0][1]-y.s[0][0]*40-y.s[0][1]);
-const COL={fruit:'#e8851a',fest:'#d6455d',trip:'#1f8a8a',event:'#7b5cc4'};
-const NM={fruit:'Fruit in season',fest:'Holidays and festivals · 2027',trip:'Getaways (comfort by month)',event:'Local events and blooms'};
+const COL={fruit:'#e8851a',fest:'#d6455d',long:'#3b82c4',trip:'#1f8a8a',event:'#7b5cc4'};
+const NM={fruit:'Fruit in season',fest:'Holidays and festivals · 2027',long:'Long weekends · 2027',trip:'Getaways (comfort by month)',event:'Local events and blooms'};
 const CITIES={
 blr:{name:'Bangalore',data:{
 fruit:[M('Mango',4,6),M('Jackfruit',4,7),M('Watermelon',3,6),M('Grapes',2,4),M('Strawberry',12,3,'Nandi Hills'),M('Orange',11,2,'Coorg'),M('Guava',8,12),M('Sapota',10,2),M('Custard apple',9,11),M('Jamun',5,7)],
@@ -70,7 +72,13 @@ fest:srt([D('Sankranti',1,14),D('Republic Day',1,26),D('Shivaji Jayanti',2,19),D
 trip:[C('Lonavala',[3,3,2,1,1,2,3,3,3,3,3,3]),C('Mahabaleshwar',[3,3,2,2,2,1,1,1,2,3,3,3]),C('Matheran',[3,3,2,2,1,1,1,1,2,3,3,3]),C('Alibaug',[3,3,2,1,1,1,1,1,2,2,3,3]),C('Ganpatipule',[3,3,2,1,1,1,1,1,2,2,3,3]),C('Kaas Plateau',[1,1,1,1,1,1,2,3,3,3,1,1]),C('Igatpuri',[2,2,2,1,1,2,3,3,3,3,3,2])],
 event:[M('Kaas Plateau flowers',8,10,'peak Sep'),M('Sahyadri waterfalls',7,9,'Lonavala, Bhivpuri'),M('Kala Ghoda Festival',2,2,'Mumbai'),M('Flamingos in Mumbai',11,3,'Sewri, Airoli'),M('Sawai Gandharva',12,12,'Pune, dates vary')]}}
 };
-const st={city:'blr',on:new Set(['fest','trip']),pin:new Set()};
+const mkLong=f=>{const A={n:'Long weekends',s:[]},B={n:'Bridge: take 1 day off',s:[]};
+f.forEach(it=>{if(!it.e||it.p||it.s[0][0]!==it.s[0][2]||it.s[0][1]!==it.s[0][3])return;const[m,d]=it.s[0],w=new Date(2027,m-1,d).getDay();
+const sp=(o1,o2,t)=>{const a=new Date(2027,m-1,d+o1),b=new Date(2027,m-1,d+o2);t.s.push([a.getMonth()+1,a.getDate(),b.getMonth()+1,b.getDate()])};
+if(w===5)sp(0,2,A);else if(w===1)sp(-2,0,A);else if(w===4)sp(0,3,B);else if(w===2)sp(-3,0,B)});
+A.note=A.s.length+' this year · 3 days off from 1 holiday';B.note=B.s.length+' this year · 1 leave day gives 4 days off';return[A,B]};
+for(const k in CITIES)CITIES[k].data.long=mkLong(CITIES[k].data.fest);
+const st={city:'blr',on:new Set(['fest','long','trip']),pin:new Set()};
 const now=new Date().getMonth();let SW=null;
 function frag(it,i){let r=null;for(const[m1,d1,m2,d2]of it.s){const m=i+1;if(m<m1||m>m2)continue;const a=m===m1?(d1-1)/DIM[i]:0,b=m===m2?Math.min(1,d2/DIM[i]):1;r=r?[Math.min(r[0],a),Math.max(r[1],b)]:[a,b]}return r}
 const val=(it,i)=>it.c?it.c[i]:(frag(it,i)?2:0);
