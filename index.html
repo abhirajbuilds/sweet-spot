@@ -19,7 +19,8 @@ h1{font:600 28px/1.2 Georgia,serif;margin:0 0 4px}
 .sweet{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:4px 0 8px}
 .sweet b{color:var(--sweet)}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-bottom:6px}
-.mh{text-align:center;font-size:12px;color:var(--mute);padding:3px 0;border-radius:6px}
+.mh{text-align:center;font-size:12px;line-height:1.25;color:var(--mute);padding:3px 0;border-radius:6px}
+.mh small{display:block;font-size:9px;opacity:.8}
 .mh.now{background:var(--ink);color:var(--bg)}
 .mh.sw{background:var(--sweet);color:#fff}
 .sec{margin:18px 0 4px;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}
@@ -46,47 +47,62 @@ h1{font:600 28px/1.2 Georgia,serif;margin:0 0 4px}
   <div class="chips" id="chips"></div>
   <div class="sweet" id="sweet"></div>
   <div id="rows"></div>
-  <p style="text-align:center;margin-top:24px"><a class="chip" id="fb" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">💬 Spotted a mistake? Tell us</a></p><p class="hint">Data last checked 17 Oct 2026. Long weekends are calculated from holidays with confirmed dates only. Draft data from general knowledge and public holiday lists, not yet fully verified. Holidays are for 2027. State governments publish the official 2027 lists around December, so dates marked ~ are approximate. Darker bars mean better or stronger conditions; faint bars mean poor ones. Check official sources before booking.</p>
+  <p style="text-align:center;margin-top:24px"><a class="chip" id="fb" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">💬 Spotted a mistake? Tell us</a></p><p class="hint">The calendar always starts from the current month and shows the next 12. Data last checked 17 Oct 2026. Long weekends are calculated from holidays with confirmed dates only. Draft data from general knowledge and public holiday lists, not yet fully verified. State governments publish official lists around December, so dates marked ~ are approximate. Darker bars mean better or stronger conditions; faint bars mean poor ones. Check official sources before booking.</p>
 </div>
 <script>
-const FEEDBACK_URL='https://forms.gle/vkB8gkubLaN85VrR9';
+const FEEDBACK_URL='https://forms.gle/REPLACE-WITH-YOUR-FORM-LINK';
 document.getElementById('fb').href=FEEDBACK_URL;
-const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DIM=[31,28,31,30,31,30,31,31,30,31,30,31];
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const T=new Date(),S=T.getMonth(),Y0=T.getFullYear();
+const WIN=Array.from({length:12},(_,j)=>({y:Y0+Math.floor((S+j)/12),m:(S+j)%12}));
+const YRS=[2026,2027,2028];
 const M=(n,a,b,note)=>({n,s:a<=b?[[a,1,b,31]]:[[a,1,12,31],[1,1,b,31]],note});
 const MM=(n,r,note)=>({n,s:r.flatMap(([a,b])=>M(n,a,b).s),note});
-const D=(n,m,d,p)=>({n,s:[[m,d,m,d]],e:1,p});
-const R=(n,m1,d1,m2,d2,p)=>({n,s:[[m1,d1,m2,d2]],e:1,p});
+const D=(n,m,d)=>({n,e:1,s:YRS.map(y=>[y,m,d,m,d,0])});
+const X=(n,...o)=>({n,e:1,s:o.map(([y,m1,d1,m2,d2,p])=>[y,m1,d1,m2,d2,p||0])});
 const C=(n,c,note)=>({n,c,note});
-const srt=a=>a.sort((x,y)=>x.s[0][0]*40+x.s[0][1]-y.s[0][0]*40-y.s[0][1]);
 const COL={fruit:'#e8851a',fest:'#d6455d',long:'#3b82c4',trip:'#1f8a8a',event:'#7b5cc4'};
-const NM={fruit:'Fruit in season',fest:'Holidays and festivals · 2027',long:'Long weekends · 2027',trip:'Getaways (comfort by month)',event:'Local events and blooms'};
+const NM={fruit:'Fruit in season',fest:'Holidays and festivals',long:'Long weekends',trip:'Getaways (comfort by month)',event:'Local events and blooms'};
 const CITIES={
 blr:{name:'Bangalore',data:{
 fruit:[M('Mango',4,6),M('Jackfruit',4,7),M('Watermelon',3,6),M('Grapes',2,4),M('Strawberry',12,3,'Nandi Hills'),M('Orange',11,2,'Coorg'),M('Guava',8,12),M('Sapota',10,2),M('Custard apple',9,11),M('Jamun',5,7)],
-fest:srt([D('Sankranti',1,14),D('Republic Day',1,26),D('Maha Shivaratri',3,6),D('Good Friday',3,26),D('Ugadi',4,7,1),D('Ambedkar Jayanti',4,14),D('Labour Day',5,1),D('Basava Jayanti',5,9),D('Independence Day',8,15),D('Ganesh Chaturthi',9,4,1),D('Gandhi Jayanti',10,2),R('Dasara',10,4,10,14,1),R('Diwali',10,28,11,1,1),D('Rajyotsava',11,1),D('Christmas',12,25)]),
+fest:[D('Sankranti',1,14),D('Republic Day',1,26),D('Ambedkar Jayanti',4,14),D('Labour Day',5,1),D('Independence Day',8,15),D('Gandhi Jayanti',10,2),D('Rajyotsava',11,1),D('Christmas',12,25),
+X('Maha Shivaratri',[2027,3,6,3,6]),X('Good Friday',[2027,3,26,3,26]),X('Ugadi',[2027,4,7,4,7,1]),X('Basava Jayanti',[2027,5,9,5,9]),X('Ganesh Chaturthi',[2027,9,4,9,4,1]),
+X('Dasara',[2026,10,19,10,20],[2027,10,4,10,14,1]),X('Valmiki Jayanti',[2026,10,26,10,26]),X('Diwali',[2026,11,8,11,10],[2027,10,28,11,1,1]),X('Kanakadasa Jayanti',[2026,11,27,11,27])],
 trip:[C('Coorg',[3,3,3,2,1,1,1,1,2,3,3,3]),C('Chikmagalur',[3,3,2,2,2,1,1,1,2,3,3,3]),C('Sakleshpur',[3,3,2,2,2,1,1,1,2,3,3,3]),C('Wayanad',[3,3,2,2,1,1,1,2,2,3,3,3]),C('Ooty',[2,2,3,3,3,2,1,1,2,2,2,2]),C('Hampi',[3,3,2,1,1,2,2,2,2,3,3,3]),C('Gokarna',[3,3,3,2,1,1,1,1,2,3,3,3]),C('Munnar',[2,3,3,3,2,1,1,1,2,3,3,3]),C('Mysuru',[3,3,2,1,1,2,2,2,3,3,3,3]),C('Mangalore',[3,3,2,2,1,1,1,1,2,2,3,3]),C('Udupi',[3,3,2,2,1,1,1,1,2,2,3,3])],
 event:[MM('Lalbagh flower show',[[1,1],[8,8]],'Republic Day and Independence Day editions'),M('Tabebuia blooms',3,4,'pink trumpet trees'),M('Coffee blossom',3,4,'Coorg, Chikmagalur'),M('Ooty flower show',5,5),M('Jog Falls in full flow',7,9),M('Mysuru Dasara',9,10),M('Hampi Utsav',11,11,'dates vary'),M('Kadalekai Parishe',11,12,'groundnut fair')]}},
 pune:{name:'Pune & Mumbai',data:{
 fruit:[M('Alphonso mango',4,6,'Konkan'),M('Strawberry',12,3,'Mahabaleshwar'),M('Grapes',2,4,'Nashik'),M('Watermelon',3,6),M('Custard apple',9,11,'Purandar'),M('Jamun',5,7),M('Orange',11,2),M('Chikoo',10,2,'Dahanu'),M('Guava',8,12)],
-fest:srt([D('Sankranti',1,14),D('Republic Day',1,26),D('Shivaji Jayanti',2,19),D('Maha Shivaratri',3,6),D('Holi',3,22,1),D('Gudi Padwa',4,7,1),D('Ambedkar Jayanti',4,14),D('Maharashtra Day',5,1),D('Independence Day',8,15),R('Ganeshotsav',9,4,9,14,1),D('Gandhi Jayanti',10,2),R('Dasara',10,4,10,14,1),R('Diwali',10,28,11,1,1),D('Christmas',12,25)]),
+fest:[D('Sankranti',1,14),D('Republic Day',1,26),D('Shivaji Jayanti',2,19),D('Ambedkar Jayanti',4,14),D('Maharashtra Day',5,1),D('Independence Day',8,15),D('Gandhi Jayanti',10,2),D('Christmas',12,25),
+X('Maha Shivaratri',[2027,3,6,3,6]),X('Holi',[2027,3,22,3,22,1]),X('Gudi Padwa',[2027,4,7,4,7,1]),X('Ganeshotsav',[2027,9,4,9,14,1]),
+X('Dasara',[2026,10,20,10,20],[2027,10,4,10,14,1]),X('Diwali',[2026,11,8,11,11],[2027,10,28,11,1,1])],
 trip:[C('Lonavala',[3,3,2,1,1,2,3,3,3,3,3,3]),C('Mahabaleshwar',[3,3,2,2,2,1,1,1,2,3,3,3]),C('Matheran',[3,3,2,2,1,1,1,1,2,3,3,3]),C('Alibaug',[3,3,2,1,1,1,1,1,2,2,3,3]),C('Ganpatipule',[3,3,2,1,1,1,1,1,2,2,3,3]),C('Kaas Plateau',[1,1,1,1,1,1,2,3,3,3,1,1]),C('Igatpuri',[2,2,2,1,1,2,3,3,3,3,3,2])],
 event:[M('Kaas Plateau flowers',8,10,'peak Sep'),M('Sahyadri waterfalls',7,9,'Lonavala, Bhivpuri'),M('Kala Ghoda Festival',2,2,'Mumbai'),M('Flamingos in Mumbai',11,3,'Sewri, Airoli'),M('Sawai Gandharva',12,12,'Pune, dates vary')]}}
 };
 const mkLong=f=>{const A={n:'Long weekends',s:[]},B={n:'Bridge: take 1 day off',s:[]};
-f.forEach(it=>{if(!it.e||it.p||it.s[0][0]!==it.s[0][2]||it.s[0][1]!==it.s[0][3])return;const[m,d]=it.s[0],w=new Date(2027,m-1,d).getDay();
-const sp=(o1,o2,t)=>{const a=new Date(2027,m-1,d+o1),b=new Date(2027,m-1,d+o2);t.s.push([a.getMonth()+1,a.getDate(),b.getMonth()+1,b.getDate()])};
-if(w===5)sp(0,2,A);else if(w===1)sp(-2,0,A);else if(w===4)sp(0,3,B);else if(w===2)sp(-3,0,B)});
-A.note=A.s.length+' this year · 3 days off from 1 holiday';B.note=B.s.length+' this year · 1 leave day gives 4 days off';return[A,B]};
+f.forEach(it=>it.s.forEach(([y,m1,d1,m2,d2,p])=>{if(it.c||p||m1!==m2||d1!==d2)return;const w=new Date(y,m1-1,d1).getDay();
+const sp=(o1,o2,t)=>{const a=new Date(y,m1-1,d1+o1),z=new Date(y,m1-1,d1+o2);if(a.getFullYear()!==z.getFullYear())return;t.s.push([a.getFullYear(),a.getMonth()+1,a.getDate(),z.getMonth()+1,z.getDate(),0])};
+if(w===5)sp(0,2,A);else if(w===1)sp(-2,0,A);else if(w===4)sp(0,3,B);else if(w===2)sp(-3,0,B)}));
+A.e=B.e=1;A.note='3 days off from 1 holiday';B.note='1 leave day gives 4 days off';return[A,B]};
 for(const k in CITIES)CITIES[k].data.long=mkLong(CITIES[k].data.fest);
 const st={city:'blr',on:new Set(['fest','long','trip']),pin:new Set()};
-const now=new Date().getMonth();let SW=null;
-function frag(it,i){let r=null;for(const[m1,d1,m2,d2]of it.s){const m=i+1;if(m<m1||m>m2)continue;const a=m===m1?(d1-1)/DIM[i]:0,b=m===m2?Math.min(1,d2/DIM[i]):1;r=r?[Math.min(r[0],a),Math.max(r[1],b)]:[a,b]}return r}
-const val=(it,i)=>it.c?it.c[i]:(frag(it,i)?2:0);
+let SW=null;
+function frag(it,j){const{y,m}=WIN[j],dim=new Date(y,m+1,0).getDate();let r=null;
+ for(const sp of it.s){let a1,b1,a2,b2,p=0;
+  if(sp.length>=5&&sp[0]>1900){if(sp[0]!==y)continue;[,a1,b1,a2,b2,p]=sp}else[a1,b1,a2,b2]=sp;
+  if(m+1<a1||m+1>a2)continue;
+  const a=m+1===a1?(b1-1)/dim:0,b=m+1===a2?Math.min(1,b2/dim):1;
+  r=r?[Math.min(r[0],a),Math.max(r[1],b),r[2]]:[a,b,sp]}
+ return r}
+const val=(it,j)=>it.c?it.c[WIN[j].m]:(frag(it,j)?2:0);
+const first=it=>{for(let j=0;j<12;j++){const f=frag(it,j);if(f)return f[2]}return null};
 const fd=(m,d)=>d+' '+MN[m-1];
-const lab=it=>{if(!it.e)return it.note||'';const[a,b,c,d]=it.s[0];return(it.p?'~':'')+(a===c&&b===d?fd(a,b):fd(a,b)+' – '+fd(c,d))};
+const lab=it=>{if(!it.e)return it.note||'';const s=first(it);if(!s||s.length<5||s[0]<1900)return it.note||'';const[,a,b,c,d,p]=s;return(p?'~':'')+(a===c&&b===d?fd(a,b):fd(a,b)+' – '+fd(c,d))+(it.note?' · '+it.note:'')};
+const sk=it=>{const s=first(it);return s&&s[0]>1900?s[0]*500+s[1]*40+s[2]:0};
 const key=(l,it)=>st.city+l+it.n;
-function sweet(){const p=[];for(const l in CITIES[st.city].data)CITIES[st.city].data[l].forEach(it=>{if(st.pin.has(key(l,it)))p.push(it)});return p.length?MN.map((_,i)=>p.every(it=>val(it,i)>=2)):null}
-const head=()=>{const h=document.createElement('div');h.className='grid';h.innerHTML=MN.map((m,i)=>'<div class="mh'+(i===now?' now':'')+(SW&&SW[i]?' sw':'')+'">'+m+'</div>').join('');return h};
+const vis=it=>it.c||it.s.length===0||WIN.some((_,j)=>frag(it,j));
+function sweet(){const p=[];const dt=CITIES[st.city].data;for(const l in dt)dt[l].forEach(it=>{if(st.pin.has(key(l,it)))p.push(it)});return p.length?WIN.map((_,j)=>p.every(it=>val(it,j)>=2)):null}
+const head=()=>{const h=document.createElement('div');h.className='grid';h.innerHTML=WIN.map((w,j)=>'<div class="mh'+(j===0?' now':'')+(SW&&SW[j]?' sw':'')+'">'+MN[w.m]+'<small>'+(j===0||w.m===0?w.y:'&nbsp;')+'</small></div>').join('');return h};
 function render(){
   const cy=document.getElementById('city');cy.innerHTML='';
   for(const k in CITIES){const b=document.createElement('button');b.className='chip'+(k===st.city?' on':'');b.textContent=CITIES[k].name;b.onclick=()=>{st.city=k;st.pin.clear();render()};cy.appendChild(b)}
@@ -94,17 +110,18 @@ function render(){
   for(const l in COL){const b=document.createElement('button');b.className='chip'+(st.on.has(l)?' on':'');b.style.setProperty('--c',COL[l]);b.textContent=NM[l];b.onclick=()=>{st.on.has(l)?st.on.delete(l):st.on.add(l);render()};ch.appendChild(b)}
   const sw=SW=sweet(),s=document.getElementById('sweet');
   if(!sw)s.innerHTML='Tap any bar below to pin it. Example: pin a fruit and a getaway to find when both work.';
-  else{const g=MN.filter((_,i)=>sw[i]);s.innerHTML=g.length?'Sweet spot: <b>'+g.join(', ')+'</b>: everything you pinned lines up.':'No month fits all your pins. Try unpinning one.'}
+  else{const g=WIN.filter((_,j)=>sw[j]).map(w=>MN[w.m]+' ’'+String(w.y).slice(2));s.innerHTML=g.length?'Sweet spot: <b>'+g.join(', ')+'</b>: everything you pinned lines up.':'No month fits all your pins. Try unpinning one.'}
   const r=document.getElementById('rows');r.innerHTML='';
   const data=CITIES[st.city].data;
   for(const l in COL){if(!st.on.has(l))continue;
     const sec=document.createElement('div');sec.className='sec';sec.style.setProperty('--c',COL[l]);sec.textContent=NM[l];r.appendChild(sec);r.appendChild(head());
-    data[l].forEach(it=>{
+    let items=data[l].filter(vis);if(l==='fest')items=items.slice().sort((a,b)=>sk(a)-sk(b));
+    items.forEach(it=>{
       const k=key(l,it),d=document.createElement('div');d.className='row'+(st.pin.has(k)?' pin':'');d.style.setProperty('--c',COL[l]);
-      d.innerHTML='<div class="t"><span>'+it.n+'</span><span>'+lab(it)+'</span></div><div class="grid">'+MN.map((_,i)=>{
-        const sc=sw&&sw[i]?' sw':'';
-        if(it.c)return '<div class="c v'+it.c[i]+sc+'"></div>';
-        const f=frag(it,i);if(!f)return '<div class="c"></div>';
+      d.innerHTML='<div class="t"><span>'+it.n+'</span><span>'+lab(it)+'</span></div><div class="grid">'+WIN.map((w,j)=>{
+        const sc=sw&&sw[j]?' sw':'';
+        if(it.c)return '<div class="c v'+it.c[w.m]+sc+'"></div>';
+        const f=frag(it,j);if(!f)return '<div class="c"></div>';
         if(f[1]-f[0]>.99)return '<div class="c v3'+sc+'"></div>';
         return '<div class="c dd'+sc+'"><i class="tk" style="left:'+f[0]*100+'%;width:'+(f[1]-f[0])*100+'%"></i></div>'}).join('')+'</div>';
       d.onclick=()=>{st.pin.has(k)?st.pin.delete(k):st.pin.add(k);render()};r.appendChild(d)});
