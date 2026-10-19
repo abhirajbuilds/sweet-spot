@@ -33,7 +33,7 @@ h1{font:600 26px/1.15 Georgia,serif;margin:0 0 2px}
 .sec::before{content:"▾";font-size:11px}.sec.col::before{content:"▸"}
 #stick{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:4px 0 6px;border-bottom:1px solid var(--line);margin-top:8px}
 .row{padding:8px;margin:0 -8px 4px;border-radius:8px}
-.row:hover{background:color-mix(in srgb,var(--c) 7%,transparent);border-radius:6px}
+@media (hover:hover){.row:hover{background:color-mix(in srgb,var(--c) 7%,transparent)}}
 .row .t{font-size:13px;display:flex;justify-content:space-between;gap:8px}
 .row .dt{color:var(--mute);font-size:12px;text-align:right}
 .row .grid{margin:0}
@@ -103,9 +103,11 @@ details.src summary{cursor:pointer}details.src a{color:inherit}
 .sec{margin:24px 0 8px;padding-top:16px;border-top:1px solid var(--line)}
 #rows>.sec:first-child{margin-top:12px;padding-top:0;border-top:0}
 #stick .sweet{margin:0 0 6px}
-#stick.min .res,#stick.min .exs{display:none}
-#stick.min .sweet{padding:8px 14px;margin-bottom:2px}
-#stick.min .sweet.empty{display:none}
+.hl1{font-size:14px;padding:0 2px 6px}
+.hl1 .hd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hl1 .res{margin-top:3px;font-size:13px}
+.hl1 .res span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hl1.empty,.sweet.empty{display:none}
 .legend{gap:6px 18px;margin:8px 0 12px}
 .c.busy{opacity:1;background:repeating-linear-gradient(135deg,var(--c) 0 3px,color-mix(in srgb,var(--c) 40%,transparent) 3px 6px)}
 .avoid .c.busy{opacity:.4}
@@ -122,8 +124,8 @@ details.src summary{cursor:pointer}details.src a{color:inherit}
   <div class="ctl"><span class="lbl">Planning for</span><div class="seg" id="city" role="group" aria-label="City"></div></div>
   <div class="chips" id="chips"></div>
   <div class="legend"><span><i class="g"></i>Matches your pins</span><span><i class="st o"></i>Official<i class="st" style="margin-left:12px"></i>Expected (~)</span></div>
-  <div id="sent"></div>
-  <div id="stick"><div class="sweet" id="sweet"></div><div id="sk2"></div></div>
+  <div id="stick"><div class="hl1 empty" id="sweet"></div><div id="sk2"></div></div>
+  <div class="sweet empty" id="detail"></div>
   <div id="rows"></div>
   <details class="src"><summary>Sources and how sure we are</summary>
   <p><b>Official</b>: fixed-date holidays, and 2026 festival dates from published state holiday lists. <b>Expected</b> (marked ~): 2027 festival dates worked out from the lunar calendar. They can shift by a day until the state notifies its official list, usually in December. Fruit, blooms, events and weather are typical patterns, not guarantees.</p>
@@ -215,17 +217,22 @@ function render(){
   const ch=document.getElementById('chips');ch.innerHTML='';
   for(const l in COL){const b=document.createElement('button');b.className='chip'+(st.on.has(l)?' on':'');b.style.setProperty('--c',COL[l]);b.textContent=CHIP[l];b.setAttribute('aria-pressed',st.on.has(l));b.onclick=()=>{track('layer-toggle: '+l);st.on.has(l)?st.on.delete(l):st.on.add(l);render()};ch.appendChild(b)}
   const av=document.createElement('button');av.className='chip'+(st.avoid?' on':'');av.style.setProperty('--c','#2e9e6b');av.textContent='Avoid crowds';av.setAttribute('aria-pressed',st.avoid);av.onclick=()=>{track('avoid-crowds');st.avoid=!st.avoid;save();render()};ch.appendChild(av);
-  const R=sweet(),{p,n,sc,best,full}=R,sw=R.sw;SW=sw;const s=document.getElementById('sweet'),pn=st.pins[st.city];s.className='sweet'+(n?'':' empty');
-  if(!n){s.innerHTML='Tap the pin icon on an item, then pin a second one to find the months where they overlap. Green-outlined months match everything you have pinned.';
-   const exs=document.createElement('div');exs.className='exs';exs.textContent='Try: ';
-   EX[st.city].forEach(([t,ks])=>{const b=document.createElement('button');b.className='lk';b.textContent=t;b.onclick=()=>{track('example: '+t);ks.forEach(k=>pn.add(k));save();render()};exs.appendChild(b)});s.appendChild(exs)}
-  else{const js=sc.map((v,j)=>j).filter(j=>sc[j]===best),row=(j,t)=>'<div class="res"><b>'+mlab(WIN[j])+'</b><span>'+t+'</span></div>';let html='';
-   if(!best)html='None of these line up in the next 12 months. Try unpinning one.';
-   else if(n===1)html='<b>Active in:</b> '+js.map(j=>mlab(WIN[j])).join(', ')+'. Pin another item to compare.';
-   else if(full)html='<b style="color:var(--sweet)">Sweet spot</b>: everything lines up in '+js.length+' month'+(js.length>1?'s':'')+'.'+js.slice(0,4).map(j=>row(j,p.map(x=>why(x,j)).join(' · '))).join('')+(js.length>4?'<div class="res"><span>+'+(js.length-4)+' more, highlighted above</span></div>':'');
-   else{html='<b>No month fits all '+n+'.</b> Closest ('+best+' of '+n+', dashed in the calendar):'+js.slice(0,3).map(j=>row(j,p.filter(x=>val(x.it,j)>=2).map(x=>why(x,j)).join(' · ')+' · <em>missing: '+p.filter(x=>val(x.it,j)<2).map(x=>x.it.n).join(', ')+'</em>')).join('');
-    if(n>=3){const op=p.map((x,i)=>WIN.filter((_,j)=>p.every((y,k)=>k===i||val(y.it,j)>=2)).length),m=Math.max(...op);if(m>0)html+='<div class="res"><span>Tip: drop <em>'+p[op.indexOf(m)].it.n+'</em> and '+(m>1?m+' months work':'1 month works')+' for the rest.</span></div>'}}
-   s.innerHTML=html}
+  const R=sweet(),{p,n,sc,best,full}=R,sw=R.sw;SW=sw;const s=document.getElementById('sweet'),det=document.getElementById('detail'),pn=st.pins[st.city];
+  let hd='',r1='',dt='',exs=null;
+  if(!n){dt='Tap the pin icon on an item, then pin a second one to find the months where they overlap. Green-outlined months match everything you have pinned.';
+   exs=document.createElement('div');exs.className='exs';exs.textContent='Try: ';
+   EX[st.city].forEach(([t,ks])=>{const b=document.createElement('button');b.className='lk';b.textContent=t;b.onclick=()=>{track('example: '+t);ks.forEach(k=>pn.add(k));save();render()};exs.appendChild(b)})}
+  else{const js=sc.map((v,j)=>j).filter(j=>sc[j]===best),row=(j,t)=>'<div class="res"><b>'+mlab(WIN[j])+'</b><span>'+t+'</span></div>',mm=js.map(j=>mlab(WIN[j]));let rs=[],ex='';
+   if(!best)hd='No match in the next 12 months';
+   else if(n===1){hd='Active in '+js.length+' month'+(js.length>1?'s':'')+'. Pin another to compare.';ex='<div class="res"><span>'+mm.join(', ')+'</span></div>'}
+   else if(full){hd='<b style="color:var(--sweet)">Sweet spot</b>: '+(js.length<=3?mm.join(', '):js.length+' months line up');
+    rs=js.slice(0,4).map(j=>row(j,p.map(x=>why(x,j)).join(' · ')));if(js.length>4)ex='<div class="res"><span>+'+(js.length-4)+' more, highlighted in the calendar</span></div>'}
+   else{hd='No month fits all '+n+' · closest '+best+' of '+n;
+    rs=js.slice(0,3).map(j=>row(j,p.filter(x=>val(x.it,j)>=2).map(x=>why(x,j)).join(' · ')+' · <em>missing: '+p.filter(x=>val(x.it,j)<2).map(x=>x.it.n).join(', ')+'</em>'));ex='<div class="res"><span>Dashed months in the calendar are the closest matches.</span></div>';
+    if(n>=3){const op=p.map((x,i)=>WIN.filter((_,j)=>p.every((y,k)=>k===i||val(y.it,j)>=2)).length),m=Math.max(...op);if(m>0)ex+='<div class="res"><span>Tip: drop <em>'+p[op.indexOf(m)].it.n+'</em> and '+(m>1?m+' months work':'1 month works')+' for the rest.</span></div>'}}
+   r1=rs[0]||'';dt=rs.slice(1).join('')+ex}
+  s.className='hl1'+(hd?'':' empty');s.innerHTML=(hd?'<div class="hd">'+hd+'</div>':'')+r1;
+  det.className='sweet'+(dt?'':' empty');det.innerHTML=dt;if(exs)det.appendChild(exs);
   const sk_=document.getElementById('sk2');sk_.innerHTML='';sk_.appendChild(head());
   if(n){const d=document.createElement('div');d.className='pstrip';d.innerHTML='<span class="pn">'+n+' pinned</span><span class="pl">'+p.map(x=>'<button class="pc" style="--c:'+COL[x.l]+'" data-k="'+key(x.l,x.it)+'" aria-label="Unpin '+x.it.n+'">'+x.it.n+' ×</button>').join('')+'</span><button class="lk clr">Clear</button><button class="lk cp">Copy link</button>';
    d.querySelector('.clr').onclick=()=>{track('clear-pins');pn.clear();save();render()};
@@ -252,7 +259,6 @@ function render(){
 }
 (function(){const r=document.getElementById('rows'),hl=j=>document.querySelectorAll('#stick .mh').forEach((m,i)=>m.classList.toggle('hl',i===j));
 r.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('.c');hl(c?+c.dataset.j:-1)});r.addEventListener('mouseleave',()=>hl(-1))})();
-(function(){const s=document.getElementById('stick'),e=document.getElementById('sent'),f=()=>s.classList.toggle('min',e.getBoundingClientRect().top<-8);addEventListener('scroll',f,{passive:true});f()})();
 save();render();
 </script>
 </body>
