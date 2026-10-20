@@ -24,7 +24,7 @@ h1{font:600 26px/1.15 Georgia,serif;margin:0 0 2px}
 .chip.on::before{opacity:1}
 .sweet{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:4px 0 8px}
 .sweet b{color:var(--sweet)}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(var(--n,12),1fr);gap:3px;margin-bottom:6px}
 .mh{text-align:center;font-size:12px;line-height:1.25;color:var(--mute);padding:3px 0;border-radius:6px}
 .mh small{display:block;font-size:9px;opacity:.8}
 .mh.now{background:var(--ink);color:var(--bg)}
@@ -115,19 +115,57 @@ details.src summary{cursor:pointer}details.src a{color:inherit}
 .key i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:4px;background:var(--c)}
 .key i.b{background:repeating-linear-gradient(135deg,var(--c) 0 3px,color-mix(in srgb,var(--c) 40%,transparent) 3px 6px)}
 .key i.s{opacity:.2}
+.how{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:4px 0 10px;font-size:14px}
+.keyb{border:1px solid var(--ink);background:none;color:var(--ink);border-radius:99px;padding:3px 12px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.keyp{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:13px}
+.keyp[hidden]{display:none}
+.kr{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:6px;color:var(--mute)}
+.kb{display:inline-block;width:16px;height:9px;border-radius:3px;vertical-align:middle;background:#1f8a8a}
+.kb.b{background:repeating-linear-gradient(135deg,#1f8a8a 0 3px,color-mix(in srgb,#1f8a8a 40%,transparent) 3px 6px)}
+.kb.m{width:5px;height:13px;background:#d6455d}
+.kb.o{background:none;outline:2px solid var(--sweet);outline-offset:1px}
+.dotp{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:18px;padding:0 6px;border-radius:9px;font-size:11px;font-style:normal;color:#fff;vertical-align:middle}
+.dotp.g{background:var(--sweet)}.dotp.a{background:#d9922b}.dotp.r{background:#cf4b4b}.dotp.n{background:var(--line);color:var(--mute)}
+.sr{display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:4px}
+.sr .grid{margin-bottom:0}
+.pl2{display:none;font-size:12px;color:var(--mute)}
+.pc2{text-align:center}
+.vcw{position:relative}
+.vb{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;text-align:left;width:100%}
+.vb .dotp{min-width:12px;width:12px;height:12px;padding:0;border-radius:50%}
+.vb small{display:block;color:var(--mute);font-size:11px}
+.pop{position:absolute;top:calc(100% + 6px);left:0;z-index:8;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.14);width:max-content;min-width:260px;max-width:92vw}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;font-size:13px;color:var(--mute)}
+.pacts{display:flex;flex-wrap:wrap;gap:6px}
+.pacts .lk{margin:0}
+.lk[aria-pressed=true]{background:color-mix(in srgb,var(--sweet) 16%,var(--card));border-color:var(--sweet)}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0 4px}
+.hero .hr{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.hero .hm{font:600 28px/1.1 Georgia,serif}
+.hero .hs{font-weight:600}
+.hero .hw{color:var(--mute);font-size:13px;margin-top:2px}
+.hero .hw em{color:var(--ink);font-style:normal}
+.alts{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--mute)}
+.ap{border:1px solid var(--line);border-radius:99px;padding:2px 10px 2px 6px;color:var(--ink);display:inline-flex;gap:6px;align-items:center}
+.hero .exs{margin-top:10px}
+.hero .lk{margin:8px 0 0}
+@media (min-width:720px){
+.sr{grid-template-columns:230px 1fr;column-gap:14px;align-items:center}
+.pl2{display:block}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Kab Aur Kahan</h1>
   <p class="sub">The right time for the good things.</p>
-  <div class="ctl"><span class="lbl">Planning for</span><div class="seg" id="city" role="group" aria-label="City"></div></div>
-  <div class="chips" id="chips"></div>
-  <div class="legend"><span><i class="g"></i>Matches your pins</span><span><i class="st o"></i>Official<i class="st" style="margin-left:12px"></i>Expected (~)</span></div>
-  <div id="stick"><div class="hl1 empty" id="sweet"></div><div id="sk2"></div></div>
-  <div class="sweet empty" id="detail"></div>
+  <div class="ctl"><span class="lbl">Planning for</span><div class="seg" id="city" role="group" aria-label="City"></div><span class="lbl">Showing</span><div class="seg" id="range" role="group" aria-label="Months shown"></div></div>
+  <div class="how"><span>Tap the pin next to what you want. The plan row shows which months fit.</span><button class="keyb" id="keyb" aria-expanded="false" aria-controls="keyp">Key <span id="kc">▾</span></button></div>
+  <div class="keyp" id="keyp" hidden><b>The plan row</b><div class="kr"><span><i class="dotp g">✓</i> everything you pinned fits</span><span><i class="dotp a">2/3</i> some fit, or the place is busy</span><span><i class="dotp r">✕</i> a pinned place is out of season</span><span><i class="dotp n">–</i> nothing fits</span></div><b style="display:block;margin-top:10px">The bars</b><div class="kr"><span><i class="kb s"></i> good or quiet</span><span><i class="kb b"></i> busy</span><span><i class="kb m"></i> a specific date</span><span><i class="kb o"></i> your match</span></div></div>
+  <div id="stick"><div id="sk2"></div></div>
+  <div class="hero" id="detail"></div>
   <div id="rows"></div>
-  <details class="src"><summary>Sources and how sure we are</summary>
+  <details class="src"><summary>How sure are we? Sources and disclaimer</summary>
   <p><b>Official</b>: fixed-date holidays, and 2026 festival dates from published state holiday lists. <b>Expected</b> (marked ~): 2027 festival dates worked out from the lunar calendar. They can shift by a day until the state notifies its official list, usually in December. Fruit, blooms, events and weather are typical patterns, not guarantees.</p>
   <p>Karnataka holiday dates were last cross-checked on 17 Oct 2026 against <a href="https://www.officeholidays.com/countries/india/karnataka/2027" target="_blank" rel="noopener">officeholidays.com</a> and <a href="https://publicholidays.in/karnataka/" target="_blank" rel="noopener">publicholidays.in</a>. Maharashtra holiday dates, fruit seasons, events, comfort scores and crowd levels are from general knowledge and not yet verified. Crowd levels are estimates based on school holidays, long weekends and festival periods, not measured counts. Official notifications will be linked here once published.</p></details>
   <p style="text-align:center;margin-top:24px"><a class="lk" id="fb" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;padding:6px 14px;font-size:13px">💬 Spotted a mistake? Tell us</a></p><p class="hint">Starts from the current month and shows the next 12. Long weekends count Saturday and Sunday as days off and use official dates only. Visits are counted anonymously, with no cookies and no personal data.</p>
@@ -140,7 +178,7 @@ const track=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcou
 document.getElementById('fb').addEventListener('click',()=>track('feedback-click'));
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const T=new Date(),S=T.getMonth(),Y0=T.getFullYear();
-const WIN=Array.from({length:12},(_,j)=>({y:Y0+Math.floor((S+j)/12),m:(S+j)%12}));
+let WIN;const mkWin=n=>Array.from({length:n},(_,j)=>({y:Y0+Math.floor((S+j)/12),m:(S+j)%12}));
 const YRS=[2026,2027,2028];
 const M=(n,a,b,note)=>({n,s:a<=b?[[a,1,b,31]]:[[a,1,12,31],[1,1,b,31]],note});
 const MM=(n,r,note)=>({n,s:r.flatMap(([a,b])=>M(n,a,b).s),note});
@@ -178,11 +216,12 @@ Lonavala:[2,2,1,1,1,2,3,3,3,2,2,3],Mahabaleshwar:[3,2,2,3,3,1,1,1,2,3,3,3],Mathe
 for(const k in CITIES)CITIES[k].data.trip.forEach(it=>{it.k=CROWD[it.n]});
 const rt=a=>{if(a.every(Boolean))return'Year-round';const o=[];for(let i=0;i<12;i++){if(a[i]&&!a[(i+11)%12]){let j=i;while(a[(j+1)%12])j++;o.push(j===i?MN[i]:MN[i]+'–'+MN[j%12])}}return o.join(', ')};
 const LS={get(){try{return JSON.parse(localStorage.getItem('sweetspot')||'{}')}catch(e){return{}}},set(v){try{localStorage.setItem('sweetspot',JSON.stringify(v))}catch(e){}}};
-const st={city:'blr',on:new Set(['fest','long','trip']),pins:{blr:new Set(),pune:new Set()},col:new Set(),avoid:false};
-(function(){const s=LS.get();if(s.city&&CITIES[s.city])st.city=s.city;st.avoid=!!s.avoid;if(s.pins)for(const k in st.pins)if(Array.isArray(s.pins[k]))st.pins[k]=new Set(s.pins[k]);
+const st={city:'blr',on:new Set(['fest','long','trip']),pins:{blr:new Set(),pune:new Set()},col:new Set(['season','fest']),avoid:false,range:6,key:false,pop:false};
+(function(){const s=LS.get();if(s.city&&CITIES[s.city])st.city=s.city;st.avoid=!!s.avoid;if([6,9,12].includes(s.range))st.range=s.range;st.key=!s.seen;if(s.pins)for(const k in st.pins)if(Array.isArray(s.pins[k]))st.pins[k]=new Set(s.pins[k]);
  try{const q=new URLSearchParams(location.hash.slice(1));if(CITIES[q.get('c')]){st.city=q.get('c');st.pins[st.city]=new Set((q.get('p')||'').split(',').filter(Boolean))}}catch(e){}})();
-function save(){LS.set({city:st.city,avoid:st.avoid,pins:Object.fromEntries(Object.entries(st.pins).map(([k,v])=>[k,[...v]]))});
+function save(){LS.set({city:st.city,avoid:st.avoid,range:st.range,seen:1,pins:Object.fromEntries(Object.entries(st.pins).map(([k,v])=>[k,[...v]]))});
  try{const p=[...st.pins[st.city]];history.replaceState(null,'',p.length?'#c='+st.city+'&p='+p.map(encodeURIComponent).join(','):'#c='+st.city)}catch(e){}}
+WIN=mkWin(st.range);
 let SW=null;
 function frag(it,j){const{y,m}=WIN[j],dim=new Date(y,m+1,0).getDate();let r=null;
  for(const sp of it.s){let a1,b1,a2,b2;
@@ -207,59 +246,81 @@ const why=(x,j)=>{const it=x.it,w=WIN[j];
  if(it.c){const wv=it.c[w.m],kv=(it.k||[])[w.m]||2;return it.n+(kv===3?' in season, but busy':wv===3?' at its best, and quiet':' pleasant and quiet')}
  if(it.e){const ss=it.s.filter(s=>s[0]===w.y&&w.m+1>=s[1]&&w.m+1<=s[3]).map(rg);return(it.rs||it.n)+' '+(stat(it)==='Expected'?'~':'')+ss.join(', ')}
  return it.n+' in season'};
+const GROUPS=[{id:'long',name:'Long weekends',src:['long']},{id:'trip',name:'Destinations',src:['trip']},{id:'season',name:'In season',src:['fruit','event']},{id:'fest',name:'Holidays and festivals',src:['fest']}];
+function verdicts(p){const n=p.length;return WIN.map((w,j)=>{if(!n)return{c:'n',t:''};const m=w.m;
+ if(p.some(x=>x.it.c&&x.it.c[m]<2))return{c:'r',t:'✕'};
+ const sc=p.filter(x=>val(x.it,j)>=2).length,busy=p.some(x=>x.it.c&&x.it.k&&x.it.k[m]===3&&x.it.c[m]>=2);
+ if(sc===n)return busy?{c:'a',t:'busy'}:{c:'g',t:'✓'};
+ return sc>=2?{c:'a',t:sc+'/'+n}:{c:'n',t:sc?sc+'/'+n:'–'}})}
 function sweet(){const pn=st.pins[st.city],dt=CITIES[st.city].data,p=[];for(const l in dt)dt[l].forEach(it=>{if(pn.has(key(l,it)))p.push({it,l})});
- const n=p.length,sc=WIN.map((_,j)=>p.filter(x=>val(x.it,j)>=2).length),best=Math.max(0,...sc),full=n>0&&best===n;
- return{p,n,sc,best,full,sw:n&&best?sc.map(v=>v===best?(full?1:2):0):null}}
-const head=()=>{const h=document.createElement('div');h.className='grid mhd';h.innerHTML=WIN.map((w,j)=>'<div class="mh'+(j===0?' now':'')+(SW&&SW[j]===1?' sw':SW&&SW[j]===2?' pt':'')+'">'+MN[w.m]+'<small>'+(j===0||w.m===0?w.y:'&nbsp;')+'</small></div>').join('');return h};
+ const n=p.length,sc=WIN.map((_,j)=>p.filter(x=>val(x.it,j)>=2).length),best=Math.max(0,...sc),vd=verdicts(p),hasG=vd.some(v=>v.c==='g');
+ const sw=n?vd.map((v,j)=>v.c==='g'?1:(!hasG&&v.c==='a'&&sc[j]===best?2:0)):null;
+ return{p,n,sc,best,vd,hasG,sw}}
+function hero(R){const{p,n,sc,best,vd,hasG}=R;
+ if(!n)return{h:'<div class="hs">Pick what you want. We will show the months where it all lines up.</div><div class="hw">Start with an example, or tap a pin below.</div>',ex:1};
+ const gi=vd.map((v,j)=>v.c==='g'?j:-1).filter(j=>j>=0),ai=vd.map((v,j)=>v.c==='a'&&sc[j]===best?j:-1).filter(j=>j>=0);
+ if(n===1)return{h:'<div class="hs">Pin another item to compare.</div><div class="hw">'+(gi.length?'Active in: '+gi.map(j=>mlab(WIN[j])).join(', '):'Not active in the next '+WIN.length+' months.')+'</div>'+(!gi.length&&WIN.length<12?'<button class="lk yr">Search 12 months</button>':'')};
+ const j0=gi.length?gi[0]:(ai.length?ai[0]:-1);
+ if(j0<0)return{h:'<div class="hs">Nothing lines up in the next '+WIN.length+' months.</div><div class="hw">One of your picks is out of season, or they never overlap. Try unpinning one'+(WIN.length<12?', or search the full year.':'.')+'</div>'+(WIN.length<12?'<button class="lk yr">Search 12 months</button>':'')};
+ const m1=p.filter(x=>val(x.it,j0)>=2),m0=p.filter(x=>val(x.it,j0)<2),v=vd[j0];
+ const s1=v.c==='g'?'All '+n+' line up':v.t==='busy'?'Everything fits, but it will be busy':m1.length+' of '+n+' line up';
+ let h='<div class="hr"><div class="hm">'+mlab(WIN[j0])+'</div><div><div class="hs">'+s1+'</div><div class="hw">'+m1.map(x=>why(x,j0)).join(' · ')+(m0.length?' · <em>missing: '+m0.map(x=>x.it.n).join(', ')+'</em>':'')+'</div></div></div>';
+ const al=(gi.length?gi.slice(1).concat(ai):ai.slice(1)).slice(0,5);
+ if(al.length)h+='<div class="alts">Also:'+al.map(j=>'<span class="ap"><i class="dotp '+vd[j].c+'">'+vd[j].t+'</i>'+mlab(WIN[j])+'</span>').join('')+'</div>';
+ if(!hasG){h+='<div class="hw" style="margin-top:8px">Dashed months in the calendar are the closest matches.</div>';
+  if(n>=3){const op=p.map((x,i)=>WIN.filter((_,j)=>p.every((y,k)=>k===i||val(y.it,j)>=2)).length),m=Math.max(...op);if(m>0)h+='<div class="hw">Tip: drop <em>'+p[op.indexOf(m)].it.n+'</em> and '+(m>1?m+' months work':'1 month works')+' for the rest.</div>'}
+  if(WIN.length<12)h+='<button class="lk yr">Search 12 months</button>'}
+ return{h}}
 function render(){
+  document.documentElement.style.setProperty('--n',WIN.length);
   const cy=document.getElementById('city');cy.innerHTML='';
   for(const k in CITIES){const b=document.createElement('button');b.textContent=CITIES[k].name;b.setAttribute('aria-pressed',k===st.city);b.onclick=()=>{st.city=k;track('city: '+k);save();render()};cy.appendChild(b)}
-  const ch=document.getElementById('chips');ch.innerHTML='';
-  for(const l in COL){const b=document.createElement('button');b.className='chip'+(st.on.has(l)?' on':'');b.style.setProperty('--c',COL[l]);b.textContent=CHIP[l];b.setAttribute('aria-pressed',st.on.has(l));b.onclick=()=>{track('layer-toggle: '+l);st.on.has(l)?st.on.delete(l):st.on.add(l);render()};ch.appendChild(b)}
-  const av=document.createElement('button');av.className='chip'+(st.avoid?' on':'');av.style.setProperty('--c','#2e9e6b');av.textContent='Avoid crowds';av.setAttribute('aria-pressed',st.avoid);av.onclick=()=>{track('avoid-crowds');st.avoid=!st.avoid;save();render()};ch.appendChild(av);
-  const R=sweet(),{p,n,sc,best,full}=R,sw=R.sw;SW=sw;const s=document.getElementById('sweet'),det=document.getElementById('detail'),pn=st.pins[st.city];
-  let hd='',r1='',dt='',exs=null;
-  if(!n){dt='Tap the pin icon on an item, then pin a second one to find the months where they overlap. Green-outlined months match everything you have pinned.';
-   exs=document.createElement('div');exs.className='exs';exs.textContent='Try: ';
-   EX[st.city].forEach(([t,ks])=>{const b=document.createElement('button');b.className='lk';b.textContent=t;b.onclick=()=>{track('example: '+t);ks.forEach(k=>pn.add(k));save();render()};exs.appendChild(b)})}
-  else{const js=sc.map((v,j)=>j).filter(j=>sc[j]===best),row=(j,t)=>'<div class="res"><b>'+mlab(WIN[j])+'</b><span>'+t+'</span></div>',mm=js.map(j=>mlab(WIN[j]));let rs=[],ex='';
-   if(!best)hd='No match in the next 12 months';
-   else if(n===1){hd='Active in '+js.length+' month'+(js.length>1?'s':'')+'. Pin another to compare.';ex='<div class="res"><span>'+mm.join(', ')+'</span></div>'}
-   else if(full){hd='<b style="color:var(--sweet)">Sweet spot</b>: '+(js.length<=3?mm.join(', '):js.length+' months line up');
-    rs=js.slice(0,4).map(j=>row(j,p.map(x=>why(x,j)).join(' · ')));if(js.length>4)ex='<div class="res"><span>+'+(js.length-4)+' more, highlighted in the calendar</span></div>'}
-   else{hd='No month fits all '+n+' · closest '+best+' of '+n;
-    rs=js.slice(0,3).map(j=>row(j,p.filter(x=>val(x.it,j)>=2).map(x=>why(x,j)).join(' · ')+' · <em>missing: '+p.filter(x=>val(x.it,j)<2).map(x=>x.it.n).join(', ')+'</em>'));ex='<div class="res"><span>Dashed months in the calendar are the closest matches.</span></div>';
-    if(n>=3){const op=p.map((x,i)=>WIN.filter((_,j)=>p.every((y,k)=>k===i||val(y.it,j)>=2)).length),m=Math.max(...op);if(m>0)ex+='<div class="res"><span>Tip: drop <em>'+p[op.indexOf(m)].it.n+'</em> and '+(m>1?m+' months work':'1 month works')+' for the rest.</span></div>'}}
-   r1=rs[0]||'';dt=rs.slice(1).join('')+ex}
-  s.className='hl1'+(hd?'':' empty');s.innerHTML=(hd?'<div class="hd">'+hd+'</div>':'')+r1;
-  det.className='sweet'+(dt?'':' empty');det.innerHTML=dt;if(exs)det.appendChild(exs);
-  const sk_=document.getElementById('sk2');sk_.innerHTML='';sk_.appendChild(head());
-  if(n){const d=document.createElement('div');d.className='pstrip';d.innerHTML='<span class="pn">'+n+' pinned</span><span class="pl">'+p.map(x=>'<button class="pc" style="--c:'+COL[x.l]+'" data-k="'+key(x.l,x.it)+'" aria-label="Unpin '+x.it.n+'">'+x.it.n+' ×</button>').join('')+'</span><button class="lk clr">Clear</button><button class="lk cp">Copy link</button>';
-   d.querySelector('.clr').onclick=()=>{track('clear-pins');pn.clear();save();render()};
-   d.querySelectorAll('.pc').forEach(b=>b.onclick=()=>{track('unpin: '+b.dataset.k);pn.delete(b.dataset.k);save();render()});
-   d.querySelector('.cp').onclick=e=>{track('copy-link');try{navigator.clipboard.writeText(location.href);e.target.textContent='Copied'}catch(x){e.target.textContent='Copy failed'}};sk_.appendChild(d)}
+  const rg=document.getElementById('range');rg.innerHTML='';
+  [6,9,12].forEach(m=>{const b=document.createElement('button');b.textContent=m+' months';b.setAttribute('aria-pressed',st.range===m);b.onclick=()=>{track('range: '+m);st.range=m;WIN=mkWin(m);save();render()};rg.appendChild(b)});
+  const R=sweet(),{p,n,sc,best,vd,hasG}=R,sw=R.sw;SW=sw;const pn=st.pins[st.city];
+  const bi=hasG?vd.findIndex(v=>v.c==='g'):(best?vd.findIndex((v,j)=>v.c==='a'&&sc[j]===best):-1);
+  const lbl=!n?'Your plan':bi<0?'No fit yet':(hasG?mlab(WIN[bi])+' fits':'Best: '+mlab(WIN[bi])+' · '+vd[bi].t),vc=!n||bi<0?'n':hasG?'g':'a';
+  const months=WIN.map((w,j)=>'<div class="mh'+(j===0?' now':'')+(sw&&sw[j]===1?' sw':sw&&sw[j]===2?' pt':'')+'">'+MN[w.m]+'<small>'+(j===0||w.m===0?w.y:'&nbsp;')+'</small></div>').join('');
+  const pop=st.pop?'<div class="pop"><div class="pchips">'+(n?p.map(x=>'<button class="pc" data-k="'+key(x.l,x.it)+'" style="--c:'+COL[x.l]+'" aria-label="Unpin '+x.it.n+'">'+x.it.n+' ×</button>').join(''):'Nothing pinned yet.')+'</div><div class="pacts"><button class="lk q" aria-pressed="'+st.avoid+'">Quiet places only</button>'+(n?'<button class="lk clr">Clear</button><button class="lk cp">Copy link</button>':'')+'</div></div>':'';
+  const skEl=document.getElementById('sk2');
+  skEl.innerHTML='<div class="sr"><div class="vcw"><button class="vb" aria-expanded="'+st.pop+'"><i class="dotp '+vc+'"></i><span><b>'+lbl+'</b><small>'+(n?n+' pinned':'Nothing pinned')+' ▾</small></span></button>'+pop+'</div><div class="grid">'+months+'</div></div>'+(n?'<div class="sr"><div class="pl2">Your plan</div><div class="grid">'+vd.map(v=>'<div class="pc2"><i class="dotp '+v.c+'">'+v.t+'</i></div>').join('')+'</div></div>':'');
+  skEl.querySelector('.vb').onclick=e=>{e.stopPropagation();st.pop=!st.pop;render()};
+  if(st.pop){skEl.querySelectorAll('.pc').forEach(b=>b.onclick=()=>{track('unpin: '+b.dataset.k);pn.delete(b.dataset.k);save();render()});
+   skEl.querySelector('.q').onclick=()=>{track('quiet-only');st.avoid=!st.avoid;save();render()};
+   if(n){skEl.querySelector('.clr').onclick=()=>{track('clear-pins');pn.clear();save();render()};
+    skEl.querySelector('.cp').onclick=e=>{track('copy-link');try{navigator.clipboard.writeText(location.href);e.target.textContent='Copied'}catch(x){e.target.textContent='Copy failed'}}}}
+  const det=document.getElementById('detail'),hr=hero(R);det.innerHTML=hr.h;
+  if(hr.ex){const exs=document.createElement('div');exs.className='exs';exs.textContent='Try an example: ';
+   EX[st.city].forEach(([t,ks])=>{const b=document.createElement('button');b.className='lk';b.textContent=t;b.onclick=()=>{track('example: '+t);ks.forEach(k=>pn.add(k));save();render()};exs.appendChild(b)});det.appendChild(exs)}
+  const yr=det.querySelector('.yr');if(yr)yr.onclick=()=>{track('search-12');st.range=12;WIN=mkWin(12);save();render()};
   const r=document.getElementById('rows');r.innerHTML='';r.className=st.avoid?'avoid':'';
   const data=CITIES[st.city].data;
-  for(const l in COL){if(!st.on.has(l))continue;
-    const sec=document.createElement('div'),tg=()=>{st.col.has(l)?st.col.delete(l):st.col.add(l);render()};
-    sec.className='sec'+(st.col.has(l)?' col':'');sec.tabIndex=0;sec.setAttribute('role','button');sec.setAttribute('aria-expanded',!st.col.has(l));
+  GROUPS.forEach(g=>{
+    const items=[];g.src.forEach(l=>data[l].filter(vis).forEach(it=>items.push({l,it})));
+    if(g.id==='fest')items.sort((a,b)=>sk(a.it)-sk(b.it));
+    const cl=st.col.has(g.id),sec=document.createElement('div'),tg=()=>{cl?st.col.delete(g.id):st.col.add(g.id);render()};
+    sec.className='sec'+(cl?' col':'');sec.tabIndex=0;sec.setAttribute('role','button');sec.setAttribute('aria-expanded',!cl);
     sec.onclick=tg;sec.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tg()}};
-    sec.style.setProperty('--c',COL[l]);sec.textContent=NM[l];if(l==='trip')sec.insertAdjacentHTML('beforeend','<span class="key"><span><i></i>Quiet</span><span><i class="b"></i>Busy</span><span><i class="s"></i>Skip</span></span>');r.appendChild(sec);if(st.col.has(l))continue;
-    let items=data[l].filter(vis);if(l==='fest')items=items.slice().sort((a,b)=>sk(a)-sk(b));
-    items.forEach(it=>{
+    sec.style.setProperty('--c',COL[g.src[0]]);sec.textContent=g.name+(cl?' · '+items.length+' items':'');
+    if(g.id==='trip')sec.insertAdjacentHTML('beforeend','<span class="key"><span><i></i>Quiet</span><span><i class="b"></i>Busy</span><span><i class="s"></i>Skip</span></span>');
+    r.appendChild(sec);if(cl)return;
+    items.forEach(({l,it})=>{
       const k=key(l,it),on=pn.has(k),d=document.createElement('div'),sx=stat(it);d.className='row'+(on?' pin':'')+(it.e?' ev':'');d.style.setProperty('--c',COL[l]);
       d.innerHTML='<div class="t"><button class="pb" aria-pressed="'+on+'" aria-label="'+(on?'Unpin ':'Pin ')+it.n+'" data-tip="'+(on?'Unpin':'Pin for comparison')+'">'+PIN+'</button><div class="lb"><span class="nm">'+it.n+(sx?'<i class="st'+(sx==='Official'?' o':'')+'" role="img" aria-label="'+sx+' date" title="'+sx+' date"></i>':'')+'</span><span class="dt">'+lab(it)+'</span></div></div><div class="grid">'+WIN.map((w,j)=>{
-        const sc=sw&&sw[j]===1?' sw':sw&&sw[j]===2?' pt':'';
-        if(it.c){const wv=it.c[w.m],kv=(it.k||[])[w.m]||2;return '<div class="c '+(wv<2?'v1':kv===3?'busy':'v3')+sc+'" data-j="'+j+'"></div>'}
+        const sc2=sw&&sw[j]===1?' sw':sw&&sw[j]===2?' pt':'';
+        if(it.c){const wv=it.c[w.m],kv=(it.k||[])[w.m]||2;return '<div class="c '+(wv<2?'v1':kv===3?'busy':'v3')+sc2+'" data-j="'+j+'"></div>'}
         const f=frag(it,j);if(!f)return '<div class="c" data-j="'+j+'"></div>';
-        if(!it.e&&f[1]-f[0]>.99)return '<div class="c v3'+sc+'" data-j="'+j+'"></div>';
-        return '<div class="c dd'+sc+'" data-j="'+j+'"><i class="tk" style="left:'+f[0]*100+'%;width:'+(f[1]-f[0])*100+'%"></i></div>'}).join('')+'</div>';
+        if(!it.e&&f[1]-f[0]>.99)return '<div class="c v3'+sc2+'" data-j="'+j+'"></div>';
+        return '<div class="c dd'+sc2+'" data-j="'+j+'"><i class="tk" style="left:'+f[0]*100+'%;width:'+(f[1]-f[0])*100+'%"></i></div>'}).join('')+'</div>';
       d.querySelector('.pb').onclick=()=>{on?pn.delete(k):pn.add(k);track((on?'unpin: ':'pin: ')+k);save();render()};r.appendChild(d)});
-  }
+  });
 }
 (function(){const r=document.getElementById('rows'),hl=j=>document.querySelectorAll('#stick .mh').forEach((m,i)=>m.classList.toggle('hl',i===j));
 r.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('.c');hl(c?+c.dataset.j:-1)});r.addEventListener('mouseleave',()=>hl(-1))})();
-save();render();
+const paintKey=()=>{document.getElementById('keyp').hidden=!st.key;document.getElementById('keyb').setAttribute('aria-expanded',st.key);document.getElementById('kc').textContent=st.key?'▴':'▾'};
+document.getElementById('keyb').onclick=()=>{track('key-toggle');st.key=!st.key;paintKey()};
+document.addEventListener('click',e=>{if(st.pop&&!(e.target.closest&&e.target.closest('.vcw'))){st.pop=false;render()}});
+paintKey();save();render();
 </script>
 </body>
 </html>
